@@ -66,8 +66,8 @@ function formatValue(value: unknown, format?: string): string {
 <style scoped>
 .table-wrapper {
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  max-width: 100%;
+  max-height: 500px;
+  overflow-y: auto;
 }
 
 .player-table {
@@ -76,6 +76,7 @@ function formatValue(value: unknown, format?: string): string {
   border-collapse: collapse;
   font-size: 0.9rem;
 }
+
 
 .player-table th,
 .player-table td {
@@ -93,6 +94,9 @@ function formatValue(value: unknown, format?: string): string {
 }
 
 .player-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   font-weight: 600;
   background: var(--code-bg);
   color: var(--text);

@@ -132,12 +132,15 @@ function resetFilters() {
   filterMaxEdad.value = ''
   filterMinMedia.value = ''
   filterMaxMedia.value = ''
+  sortColumn.value = null
+  sortDirection.value = 'asc'
 }
 </script>
 
 <template>
   <main class="page">
     <h1>Jugadores</h1>
+
     <div class="filters-section">
       <PlayerFilters
         v-model:search-query="searchQuery"
@@ -151,25 +154,37 @@ function resetFilters() {
         :equipo-options="equipoOptions"
         :nacionalidad-options="nacionalidadOptions"
         :posicion-options="posicionOptions"
-      />
-      <button type="button" class="reset-btn" @click="resetFilters">
-        Reset filters
-      </button>
+      >
+        <template #reset>
+          <button class="reset-btn" @click="resetFilters">
+            Reset filters
+          </button>
+        </template>
+      </PlayerFilters>
     </div>
+
+    
+
     <PlayerTable
       :players="sortedPlayers"
       :sort-column="sortColumn"
       :sort-direction="sortDirection"
       @sort="handleSort"
     />
+    <div class="no-players" v-if="sortedPlayers.length === 0">
+      No players match the filters
+    </div>
+    <p class="results-count">
+      {{ sortedPlayers.length }} jugadores
+    </p>
   </main>
 </template>
 
 <style scoped>
 .page {
   padding: 2rem;
-  text-align: left;
-  max-width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   box-sizing: border-box;
 }
 
@@ -179,18 +194,28 @@ function resetFilters() {
   }
 }
 
+@media (max-width: 640px) {
+  .reset-btn {
+    width: 100%;
+  }
+}
+
 .page h1 {
-  margin-top: 0;
+  margin-top:0;
+  font-size: 1.8rem;
+  font-weight: 600;
   margin-bottom: 1.5rem;
 }
 
 .filters-section {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 1rem;
   margin-bottom: 1.5rem;
+
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
 }
+
 
 .reset-btn {
   padding: 0.5rem 1rem;
@@ -209,5 +234,19 @@ function resetFilters() {
 .reset-btn:focus {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+.no-players {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 1.5rem;
+}
+
+.results-count {
+  margin: 1rem 0 0;
+  font-size: 0.95rem;
+  color: var(--text);
+  text-align: right;
 }
 </style>
