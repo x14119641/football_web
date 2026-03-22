@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import PlayerFilters from './components/PlayerFilters.vue'
 import PlayerTable from './components/PlayerTable.vue'
 import type { Player } from './types/player'
 import jugadoresData from './data/jugadores.json'
@@ -90,60 +91,19 @@ const filteredPlayers = computed(() => {
 <template>
   <main class="page">
     <h1>Jugadores</h1>
-    <div class="filters">
-      <label class="filter-field">
-        <span>Buscar por nombre</span>
-        <input
-          v-model="searchQuery"
-          type="search"
-          placeholder="Escribir nombre..."
-          autocomplete="off"
-        />
-      </label>
-      <label class="filter-field">
-        <span>Equipo</span>
-        <select v-model="filterEquipo">
-          <option value="">Todos</option>
-          <option v-for="opt in equipoOptions" :key="opt" :value="opt">
-            {{ opt }}
-          </option>
-        </select>
-      </label>
-      <label class="filter-field">
-        <span>Nacionalidad</span>
-        <select v-model="filterNacionalidad">
-          <option value="">Todos</option>
-          <option v-for="opt in nacionalidadOptions" :key="opt" :value="opt">
-            {{ opt }}
-          </option>
-        </select>
-      </label>
-      <label class="filter-field">
-        <span>Posición</span>
-        <select v-model="filterPosicion">
-          <option value="">Todos</option>
-          <option v-for="opt in posicionOptions" :key="opt" :value="opt">
-            {{ opt }}
-          </option>
-        </select>
-      </label>
-      <label class="filter-field">
-        <span>Edad mín</span>
-        <input v-model="filterMinEdad" type="number" placeholder="—" min="0" />
-      </label>
-      <label class="filter-field">
-        <span>Edad máx</span>
-        <input v-model="filterMaxEdad" type="number" placeholder="—" min="0" />
-      </label>
-      <label class="filter-field">
-        <span>Media mín</span>
-        <input v-model="filterMinMedia" type="number" placeholder="—" min="0" />
-      </label>
-      <label class="filter-field">
-        <span>Media máx</span>
-        <input v-model="filterMaxMedia" type="number" placeholder="—" min="0" />
-      </label>
-    </div>
+    <PlayerFilters
+      v-model:search-query="searchQuery"
+      v-model:filter-equipo="filterEquipo"
+      v-model:filter-nacionalidad="filterNacionalidad"
+      v-model:filter-posicion="filterPosicion"
+      v-model:filter-min-edad="filterMinEdad"
+      v-model:filter-max-edad="filterMaxEdad"
+      v-model:filter-min-media="filterMinMedia"
+      v-model:filter-max-media="filterMaxMedia"
+      :equipo-options="equipoOptions"
+      :nacionalidad-options="nacionalidadOptions"
+      :posicion-options="posicionOptions"
+    />
     <PlayerTable :players="filteredPlayers" />
   </main>
 </template>
@@ -158,54 +118,4 @@ const filteredPlayers = computed(() => {
   margin-top: 0;
   margin-bottom: 1.5rem;
 }
-
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.filter-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.filter-field span {
-  font-size: 0.85rem;
-  color: var(--text);
-}
-
-.filter-field input,
-.filter-field select {
-  padding: 0.5rem 0.75rem;
-  font-size: 1rem;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--bg);
-  color: var(--text-h);
-  min-width: 10rem;
-}
-
-.filter-field input[type='search'] {
-  max-width: 20rem;
-}
-
-.filter-field input[type='number'] {
-  width: 5rem;
-  min-width: 5rem;
-}
-
-.filter-field input:focus,
-.filter-field select:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-.filter-field input::placeholder {
-  color: var(--text);
-  opacity: 0.7;
-}
-
 </style>
