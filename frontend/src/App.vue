@@ -9,6 +9,10 @@ const searchQuery = ref('')
 const filterEquipo = ref('')
 const filterNacionalidad = ref('')
 const filterPosicion = ref('')
+const filterMinEdad = ref('')
+const filterMaxEdad = ref('')
+const filterMinMedia = ref('')
+const filterMaxMedia = ref('')
 
 function uniqueSorted(values: (string | null)[]): string[] {
   const set = new Set(
@@ -48,6 +52,35 @@ const filteredPlayers = computed(() => {
   }
   if (filterPosicion.value) {
     result = result.filter((p) => (p.posicion ?? '') === filterPosicion.value)
+  }
+
+  const minEdadStr = String(filterMinEdad.value ?? '').trim()
+  if (minEdadStr !== '') {
+    const minEdad = Number(minEdadStr)
+    if (!Number.isNaN(minEdad)) {
+      result = result.filter((p) => (p.edad ?? 0) >= minEdad)
+    }
+  }
+  const maxEdadStr = String(filterMaxEdad.value ?? '').trim()
+  if (maxEdadStr !== '') {
+    const maxEdad = Number(maxEdadStr)
+    if (!Number.isNaN(maxEdad)) {
+      result = result.filter((p) => (p.edad ?? 0) <= maxEdad)
+    }
+  }
+  const minMediaStr = String(filterMinMedia.value ?? '').trim()
+  if (minMediaStr !== '') {
+    const minMedia = Number(minMediaStr)
+    if (!Number.isNaN(minMedia)) {
+      result = result.filter((p) => (p.mediaJugador ?? 0) >= minMedia)
+    }
+  }
+  const maxMediaStr = String(filterMaxMedia.value ?? '').trim()
+  if (maxMediaStr !== '') {
+    const maxMedia = Number(maxMediaStr)
+    if (!Number.isNaN(maxMedia)) {
+      result = result.filter((p) => (p.mediaJugador ?? 0) <= maxMedia)
+    }
   }
 
   return result
@@ -94,6 +127,22 @@ const filteredPlayers = computed(() => {
           </option>
         </select>
       </label>
+      <label class="filter-field">
+        <span>Edad mín</span>
+        <input v-model="filterMinEdad" type="number" placeholder="—" min="0" />
+      </label>
+      <label class="filter-field">
+        <span>Edad máx</span>
+        <input v-model="filterMaxEdad" type="number" placeholder="—" min="0" />
+      </label>
+      <label class="filter-field">
+        <span>Media mín</span>
+        <input v-model="filterMinMedia" type="number" placeholder="—" min="0" />
+      </label>
+      <label class="filter-field">
+        <span>Media máx</span>
+        <input v-model="filterMaxMedia" type="number" placeholder="—" min="0" />
+      </label>
     </div>
     <PlayerTable :players="filteredPlayers" />
   </main>
@@ -139,8 +188,13 @@ const filteredPlayers = computed(() => {
   min-width: 10rem;
 }
 
-.filter-field input {
+.filter-field input[type='search'] {
   max-width: 20rem;
+}
+
+.filter-field input[type='number'] {
+  width: 5rem;
+  min-width: 5rem;
 }
 
 .filter-field input:focus,
