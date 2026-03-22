@@ -1,38 +1,55 @@
-# "Liguilla" web
-Aplicacion Vue para visualizar y filtrar jugadores a partir de los datos exportados desde un Excel.
+# Liguilla Web
+Aplicación web desarrollada con Vue 3 para visualizar, filtrar y explorar jugadores a partir de los datos importados desde Excel y convertidos a JSON
 
-## Scripts
-Python "xlsx to json".
 
 ## Objetivo
-PErmitir al usuario filtrat jugadores por:
-    - nombre
-    - equipo
-    - nacionalidad
-    - posicion
-    - edad
-    - media del jugador
-    - valor / precio de mercado
+Permitir al usuario explorar y analizar jugadores de forma rápida mediante:
+- Búsqueda por nombre
+- Filtros por equipo, nacionalidad y posicion
+- Filtros por rangos (edad y media)
+- Ordenación por columnas
+- Visualización clara en tabla
+ 
 
+## Data Flow
+1. Se parte de un Excel "master" original 
+2. Se limpia manualmente (columnas innecesarias, nombres)
+3. Un script Python convierte el Excel a JSON
+4. El frontend (Vue) carga el JSON y aplica:
+   - Filtros
+   - Ordenación
+   - Renderizado en tabla
+  
 ## Stack
 - Vue 3
 - Vite
 - Typescript
-- Python (para extrater los datos del excel a json)
+- Python (pandas para conversión de Excel a JSON)
 
-## Primera version
-Scripts:
- - excel to json
 
-Frontend:
-- Table con datos
-- Busqueda por texto
-- Filtros por columnas
-- Ordenacion
+## Ejecutar localmente
+```bash
+npm install
+npm run dev
+```
+
+## Funcionalidades actuales
+- Tabla de jugadores
+- Búsqueda por texto (nombre)
+- Filtros por múltiples campos
+- Filtros por rango (edad y media)
+- Ordenación por columnas
+- Reset de filtros
+- Contador de resultados
+
+
+## Decisiones de diseño
+- Se utiliza JSON en lugar de Excel en el frontend para simplificar el parsing
+- El procesamiento de datos se separa del frontend
+- No se utiliza backend para mantener la aplicación simple y fácilmente desplegable.
+- Se evita la paginación para priorizar la exploración continua de datos.
 
 
 ## Mejoras futuras
-- improtar Excel directamente
-- Filtors mas avanzados
-- Paginacion
-- ¿Detalles jugador a partir de otra API (sofifa.com)?
+- Filtros más avanzados
+- Integración con APIs externas (ej.: Sofifa) para ampliar información de jugadores.
