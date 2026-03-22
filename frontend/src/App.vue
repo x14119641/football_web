@@ -86,12 +86,24 @@ const filteredPlayers = computed(() => {
 
   return result
 })
+
+function resetFilters() {
+  searchQuery.value = ''
+  filterEquipo.value = ''
+  filterNacionalidad.value = ''
+  filterPosicion.value = ''
+  filterMinEdad.value = ''
+  filterMaxEdad.value = ''
+  filterMinMedia.value = ''
+  filterMaxMedia.value = ''
+}
 </script>
 
 <template>
   <main class="page">
     <h1>Jugadores</h1>
-    <PlayerFilters
+    <div class="filters-section">
+      <PlayerFilters
       v-model:search-query="searchQuery"
       v-model:filter-equipo="filterEquipo"
       v-model:filter-nacionalidad="filterNacionalidad"
@@ -103,7 +115,11 @@ const filteredPlayers = computed(() => {
       :equipo-options="equipoOptions"
       :nacionalidad-options="nacionalidadOptions"
       :posicion-options="posicionOptions"
-    />
+      />
+      <button type="button" class="reset-btn" @click="resetFilters">
+        Reset filters
+      </button>
+    </div>
     <PlayerTable :players="filteredPlayers" />
   </main>
 </template>
@@ -117,5 +133,32 @@ const filteredPlayers = computed(() => {
 .page h1 {
   margin-top: 0;
   margin-bottom: 1.5rem;
+}
+
+.filters-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.reset-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-h);
+  cursor: pointer;
+}
+
+.reset-btn:hover {
+  background: var(--code-bg);
+}
+
+.reset-btn:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 </style>
