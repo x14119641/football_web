@@ -56,6 +56,10 @@ El script se encuentra en la carpeta `/scripts`.
 Para más detalles, ver: `scripts/README.md`
 
 
+## Demo
+https://footballweb-nine.vercel.app/
+
+
 ## Mejoras futuras
 - Filtros más avanzados
 - Integración con APIs externas (ej.: Sofifa) para ampliar información de jugadores.
