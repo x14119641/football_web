@@ -1,11 +1,11 @@
 # Liguilla Web
-Aplicación web desarrollada con Vue 3 para visualizar, filtrar y explorar jugadores a partir de los datos importados desde Excel y convertidos a JSON
+Aplicación web desarrollada con Vue 3 para visualizar, filtrar y explorar jugadores a partir de los datos importados desde Excel y convertidos a JSON.
 
 
 ## Objetivo
 Permitir al usuario explorar y analizar jugadores de forma rápida mediante:
 - Búsqueda por nombre
-- Filtros por equipo, nacionalidad y posicion
+- Filtros por equipo, nacionalidad y posición
 - Filtros por rangos (edad y media)
 - Ordenación por columnas
 - Visualización clara en tabla
@@ -23,7 +23,7 @@ Permitir al usuario explorar y analizar jugadores de forma rápida mediante:
 ## Stack
 - Vue 3
 - Vite
-- Typescript
+- TypeScript
 - Python (pandas para conversión de Excel a JSON)
 
 
@@ -48,6 +48,12 @@ npm run dev
 - El procesamiento de datos se separa del frontend
 - No se utiliza backend para mantener la aplicación simple y fácilmente desplegable.
 - Se evita la paginación para priorizar la exploración continua de datos.
+
+
+## Procesamiento de datos
+Los datos utilizados en la aplicación provienen de un archivo Excel que es transformado a JSON mediante un script en Python.
+El script se encuentra en la carpeta `/scripts`.
+Para más detalles, ver: `scripts/README.md`
 
 
 ## Mejoras futuras
