@@ -2,10 +2,13 @@
 import { ref, computed } from 'vue'
 import PlayerFilters from './components/PlayerFilters.vue'
 import PlayerTable from './components/PlayerTable.vue'
-import type { Player } from './types/player'
+import type { Player, SortColumn, SortDirection } from './types/player'
 import jugadoresData from './data/jugadores.json'
 
+// Data
 const players = ref<Player[]>(jugadoresData as Player[])
+
+// Filter state
 const searchQuery = ref('')
 const filterEquipo = ref('')
 const filterNacionalidad = ref('')
@@ -15,18 +18,7 @@ const filterMaxEdad = ref('')
 const filterMinMedia = ref('')
 const filterMaxMedia = ref('')
 
-type SortColumn = keyof Pick<
-  Player,
-  | 'nombre'
-  | 'equipoActual'
-  | 'nacionalidad'
-  | 'posicion'
-  | 'edad'
-  | 'mediaJugador'
-  | 'valor'
-  | 'precioMercado'
->
-type SortDirection = 'asc' | 'desc'
+// Sort state
 const sortColumn = ref<SortColumn | null>(null)
 const sortDirection = ref<SortDirection>('asc')
 
@@ -35,6 +27,13 @@ function uniqueSorted(values: (string | null)[]): string[] {
     values.map((v) => String(v ?? '').trim()).filter(Boolean)
   )
   return [...set].sort()
+}
+
+function parseOptionalNumber(value: string | number): number | null {
+  const str = String(value ?? '').trim()
+  if (str === '') return null
+  const num = Number(str)
+  return Number.isNaN(num) ? null : num
 }
 
 const equipoOptions = computed(() =>
@@ -50,11 +49,11 @@ const posicionOptions = computed(() =>
 const filteredPlayers = computed(() => {
   let result = players.value
 
-  const q = searchQuery.value.trim().toLowerCase()
-  if (q) {
+  const searchTerm = searchQuery.value.trim().toLowerCase()
+  if (searchTerm) {
     result = result.filter((p) => {
       const nombre = p.nombre ?? ''
-      return String(nombre).toLowerCase().includes(q)
+      return String(nombre).toLowerCase().includes(searchTerm)
     })
   }
 
@@ -70,33 +69,21 @@ const filteredPlayers = computed(() => {
     result = result.filter((p) => (p.posicion ?? '') === filterPosicion.value)
   }
 
-  const minEdadStr = String(filterMinEdad.value ?? '').trim()
-  if (minEdadStr !== '') {
-    const minEdad = Number(minEdadStr)
-    if (!Number.isNaN(minEdad)) {
-      result = result.filter((p) => (p.edad ?? 0) >= minEdad)
-    }
+  const minEdad = parseOptionalNumber(filterMinEdad.value)
+  if (minEdad != null) {
+    result = result.filter((p) => (p.edad ?? 0) >= minEdad)
   }
-  const maxEdadStr = String(filterMaxEdad.value ?? '').trim()
-  if (maxEdadStr !== '') {
-    const maxEdad = Number(maxEdadStr)
-    if (!Number.isNaN(maxEdad)) {
-      result = result.filter((p) => (p.edad ?? 0) <= maxEdad)
-    }
+  const maxEdad = parseOptionalNumber(filterMaxEdad.value)
+  if (maxEdad != null) {
+    result = result.filter((p) => (p.edad ?? 0) <= maxEdad)
   }
-  const minMediaStr = String(filterMinMedia.value ?? '').trim()
-  if (minMediaStr !== '') {
-    const minMedia = Number(minMediaStr)
-    if (!Number.isNaN(minMedia)) {
-      result = result.filter((p) => (p.mediaJugador ?? 0) >= minMedia)
-    }
+  const minMedia = parseOptionalNumber(filterMinMedia.value)
+  if (minMedia != null) {
+    result = result.filter((p) => (p.mediaJugador ?? 0) >= minMedia)
   }
-  const maxMediaStr = String(filterMaxMedia.value ?? '').trim()
-  if (maxMediaStr !== '') {
-    const maxMedia = Number(maxMediaStr)
-    if (!Number.isNaN(maxMedia)) {
-      result = result.filter((p) => (p.mediaJugador ?? 0) <= maxMedia)
-    }
+  const maxMedia = parseOptionalNumber(filterMaxMedia.value)
+  if (maxMedia != null) {
+    result = result.filter((p) => (p.mediaJugador ?? 0) <= maxMedia)
   }
 
   return result
@@ -104,24 +91,26 @@ const filteredPlayers = computed(() => {
 
 const sortedPlayers = computed(() => {
   const list = [...filteredPlayers.value]
-  const col = sortColumn.value
-  const dir = sortDirection.value
-  if (!col) return list
+  const column = sortColumn.value
+  const direction = sortDirection.value
+  if (!column) return list
 
   return list.sort((a, b) => {
-    const aVal = a[col]
-    const bVal = b[col]
-    const isNum =
+    const aVal = a[column]
+    const bVal = b[column]
+    const isNumeric =
       typeof aVal === 'number' || typeof bVal === 'number'
-    if (isNum) {
+
+    if (isNumeric) {
       const numA = Number(aVal ?? 0)
       const numB = Number(bVal ?? 0)
-      return dir === 'asc' ? numA - numB : numB - numA
+      return direction === 'asc' ? numA - numB : numB - numA
     }
+
     const strA = String(aVal ?? '')
     const strB = String(bVal ?? '')
     const cmp = strA.localeCompare(strB, 'es')
-    return dir === 'asc' ? cmp : -cmp
+    return direction === 'asc' ? cmp : -cmp
   })
 })
 
@@ -151,17 +140,17 @@ function resetFilters() {
     <h1>Jugadores</h1>
     <div class="filters-section">
       <PlayerFilters
-      v-model:search-query="searchQuery"
-      v-model:filter-equipo="filterEquipo"
-      v-model:filter-nacionalidad="filterNacionalidad"
-      v-model:filter-posicion="filterPosicion"
-      v-model:filter-min-edad="filterMinEdad"
-      v-model:filter-max-edad="filterMaxEdad"
-      v-model:filter-min-media="filterMinMedia"
-      v-model:filter-max-media="filterMaxMedia"
-      :equipo-options="equipoOptions"
-      :nacionalidad-options="nacionalidadOptions"
-      :posicion-options="posicionOptions"
+        v-model:search-query="searchQuery"
+        v-model:filter-equipo="filterEquipo"
+        v-model:filter-nacionalidad="filterNacionalidad"
+        v-model:filter-posicion="filterPosicion"
+        v-model:filter-min-edad="filterMinEdad"
+        v-model:filter-max-edad="filterMaxEdad"
+        v-model:filter-min-media="filterMinMedia"
+        v-model:filter-max-media="filterMaxMedia"
+        :equipo-options="equipoOptions"
+        :nacionalidad-options="nacionalidadOptions"
+        :posicion-options="posicionOptions"
       />
       <button type="button" class="reset-btn" @click="resetFilters">
         Reset filters

@@ -13,3 +13,16 @@ export interface Player {
   precioMercado: number
   [key: string]: unknown // Allow additional fields from JSON
 }
+
+/** Columns that can be sorted */
+export type SortColumn =
+  | 'nombre'
+  | 'equipoActual'
+  | 'nacionalidad'
+  | 'posicion'
+  | 'edad'
+  | 'mediaJugador'
+  | 'valor'
+  | 'precioMercado'
+
+export type SortDirection = 'asc' | 'desc'

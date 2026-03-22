@@ -23,6 +23,10 @@ const emit = defineEmits<{
   'update:filterMinMedia': [value: string | number]
   'update:filterMaxMedia': [value: string | number]
 }>()
+
+function inputValue(e: Event): string {
+  return (e.target as HTMLInputElement).value
+}
 </script>
 
 <template>
@@ -34,14 +38,14 @@ const emit = defineEmits<{
         type="search"
         placeholder="Escribir nombre..."
         autocomplete="off"
-        @input="emit('update:searchQuery', ($event.target as HTMLInputElement).value)"
+        @input="emit('update:searchQuery', inputValue($event))"
       />
     </label>
     <label class="filter-field">
       <span>Equipo</span>
       <select
         :value="filterEquipo"
-        @change="emit('update:filterEquipo', ($event.target as HTMLSelectElement).value)"
+        @change="emit('update:filterEquipo', inputValue($event))"
       >
         <option value="">Todos</option>
         <option v-for="opt in equipoOptions" :key="opt" :value="opt">
@@ -53,9 +57,9 @@ const emit = defineEmits<{
       <span>Nacionalidad</span>
       <select
         :value="filterNacionalidad"
-        @change="emit('update:filterNacionalidad', ($event.target as HTMLSelectElement).value)"
+        @change="emit('update:filterNacionalidad', inputValue($event))"
       >
-        <option value="">Todos</option>
+        <option value="">Todas</option>
         <option v-for="opt in nacionalidadOptions" :key="opt" :value="opt">
           {{ opt }}
         </option>
@@ -65,9 +69,9 @@ const emit = defineEmits<{
       <span>Posición</span>
       <select
         :value="filterPosicion"
-        @change="emit('update:filterPosicion', ($event.target as HTMLSelectElement).value)"
+        @change="emit('update:filterPosicion', inputValue($event))"
       >
-        <option value="">Todos</option>
+        <option value="">Todas</option>
         <option v-for="opt in posicionOptions" :key="opt" :value="opt">
           {{ opt }}
         </option>
@@ -80,7 +84,7 @@ const emit = defineEmits<{
         type="number"
         placeholder="—"
         min="0"
-        @input="emit('update:filterMinEdad', ($event.target as HTMLInputElement).value)"
+        @input="emit('update:filterMinEdad', inputValue($event))"
       />
     </label>
     <label class="filter-field">
@@ -90,7 +94,7 @@ const emit = defineEmits<{
         type="number"
         placeholder="—"
         min="0"
-        @input="emit('update:filterMaxEdad', ($event.target as HTMLInputElement).value)"
+        @input="emit('update:filterMaxEdad', inputValue($event))"
       />
     </label>
     <label class="filter-field">
@@ -100,7 +104,7 @@ const emit = defineEmits<{
         type="number"
         placeholder="—"
         min="0"
-        @input="emit('update:filterMinMedia', ($event.target as HTMLInputElement).value)"
+        @input="emit('update:filterMinMedia', inputValue($event))"
       />
     </label>
     <label class="filter-field">
@@ -110,7 +114,7 @@ const emit = defineEmits<{
         type="number"
         placeholder="—"
         min="0"
-        @input="emit('update:filterMaxMedia', ($event.target as HTMLInputElement).value)"
+        @input="emit('update:filterMaxMedia', inputValue($event))"
       />
     </label>
   </div>

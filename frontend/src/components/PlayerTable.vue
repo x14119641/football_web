@@ -1,22 +1,10 @@
 <script setup lang="ts">
-import type { Player } from '../types/player'
+import type { Player, SortColumn, SortDirection } from '../types/player'
 
-type SortColumn = keyof Pick<
-  Player,
-  | 'nombre'
-  | 'equipoActual'
-  | 'nacionalidad'
-  | 'posicion'
-  | 'edad'
-  | 'mediaJugador'
-  | 'valor'
-  | 'precioMercado'
->
-
-const props = defineProps<{
+defineProps<{
   players: Player[]
   sortColumn: SortColumn | null
-  sortDirection: 'asc' | 'desc'
+  sortDirection: SortDirection
 }>()
 
 const emit = defineEmits<{
