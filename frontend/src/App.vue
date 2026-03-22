@@ -15,6 +15,21 @@ const filterMaxEdad = ref('')
 const filterMinMedia = ref('')
 const filterMaxMedia = ref('')
 
+type SortColumn = keyof Pick<
+  Player,
+  | 'nombre'
+  | 'equipoActual'
+  | 'nacionalidad'
+  | 'posicion'
+  | 'edad'
+  | 'mediaJugador'
+  | 'valor'
+  | 'precioMercado'
+>
+type SortDirection = 'asc' | 'desc'
+const sortColumn = ref<SortColumn | null>(null)
+const sortDirection = ref<SortDirection>('asc')
+
 function uniqueSorted(values: (string | null)[]): string[] {
   const set = new Set(
     values.map((v) => String(v ?? '').trim()).filter(Boolean)
@@ -87,6 +102,38 @@ const filteredPlayers = computed(() => {
   return result
 })
 
+const sortedPlayers = computed(() => {
+  const list = [...filteredPlayers.value]
+  const col = sortColumn.value
+  const dir = sortDirection.value
+  if (!col) return list
+
+  return list.sort((a, b) => {
+    const aVal = a[col]
+    const bVal = b[col]
+    const isNum =
+      typeof aVal === 'number' || typeof bVal === 'number'
+    if (isNum) {
+      const numA = Number(aVal ?? 0)
+      const numB = Number(bVal ?? 0)
+      return dir === 'asc' ? numA - numB : numB - numA
+    }
+    const strA = String(aVal ?? '')
+    const strB = String(bVal ?? '')
+    const cmp = strA.localeCompare(strB, 'es')
+    return dir === 'asc' ? cmp : -cmp
+  })
+})
+
+function handleSort(column: SortColumn) {
+  if (sortColumn.value === column) {
+    sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    sortColumn.value = column
+    sortDirection.value = 'asc'
+  }
+}
+
 function resetFilters() {
   searchQuery.value = ''
   filterEquipo.value = ''
@@ -120,7 +167,12 @@ function resetFilters() {
         Reset filters
       </button>
     </div>
-    <PlayerTable :players="filteredPlayers" />
+    <PlayerTable
+      :players="sortedPlayers"
+      :sort-column="sortColumn"
+      :sort-direction="sortDirection"
+      @sort="handleSort"
+    />
   </main>
 </template>
 
@@ -128,6 +180,14 @@ function resetFilters() {
 .page {
   padding: 2rem;
   text-align: left;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 1rem;
+  }
 }
 
 .page h1 {

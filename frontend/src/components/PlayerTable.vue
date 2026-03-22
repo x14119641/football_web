@@ -1,11 +1,29 @@
 <script setup lang="ts">
 import type { Player } from '../types/player'
 
-defineProps<{
+type SortColumn = keyof Pick<
+  Player,
+  | 'nombre'
+  | 'equipoActual'
+  | 'nacionalidad'
+  | 'posicion'
+  | 'edad'
+  | 'mediaJugador'
+  | 'valor'
+  | 'precioMercado'
+>
+
+const props = defineProps<{
   players: Player[]
+  sortColumn: SortColumn | null
+  sortDirection: 'asc' | 'desc'
 }>()
 
-const columns: { key: keyof Player; label: string; format?: 'number' }[] = [
+const emit = defineEmits<{
+  sort: [column: SortColumn]
+}>()
+
+const columns: { key: SortColumn; label: string; format?: 'number' }[] = [
   { key: 'nombre', label: 'Nombre' },
   { key: 'equipoActual', label: 'Equipo' },
   { key: 'nacionalidad', label: 'Nacionalidad' },
@@ -30,8 +48,19 @@ function formatValue(value: unknown, format?: string): string {
     <table class="player-table">
       <thead>
         <tr>
-          <th v-for="col in columns" :key="col.key">
-            {{ col.label }}
+          <th
+            v-for="col in columns"
+            :key="col.key"
+            class="sortable"
+            :class="{ active: sortColumn === col.key }"
+            @click="emit('sort', col.key)"
+          >
+            <span class="th-content">
+              {{ col.label }}
+              <span v-if="sortColumn === col.key" class="sort-icon">
+                {{ sortDirection === 'asc' ? '↑' : '↓' }}
+              </span>
+            </span>
           </th>
         </tr>
       </thead>
@@ -49,10 +78,13 @@ function formatValue(value: unknown, format?: string): string {
 <style scoped>
 .table-wrapper {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
 }
 
 .player-table {
   width: 100%;
+  min-width: 600px;
   border-collapse: collapse;
   font-size: 0.9rem;
 }
@@ -64,10 +96,36 @@ function formatValue(value: unknown, format?: string): string {
   border-bottom: 1px solid var(--border);
 }
 
+@media (max-width: 640px) {
+  .player-table th,
+  .player-table td {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+}
+
 .player-table th {
   font-weight: 600;
   background: var(--code-bg);
   color: var(--text);
+}
+
+.player-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.player-table th.sortable:hover {
+  background: var(--border);
+}
+
+.player-table th .th-content {
+  white-space: nowrap;
+}
+
+.player-table th.sortable .sort-icon {
+  margin-left: 0.25rem;
+  color: var(--accent);
 }
 
 .player-table tbody tr:hover {

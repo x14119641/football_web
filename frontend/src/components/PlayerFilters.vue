@@ -124,6 +124,12 @@ const emit = defineEmits<{
   margin-bottom: 1.5rem;
 }
 
+@media (max-width: 640px) {
+  .filters {
+    gap: 0.75rem 1rem;
+  }
+}
+
 .filter-field {
   display: flex;
   flex-direction: column;
@@ -144,10 +150,26 @@ const emit = defineEmits<{
   background: var(--bg);
   color: var(--text-h);
   min-width: 10rem;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .filter-field input,
+  .filter-field select {
+    min-width: 8rem;
+  }
 }
 
 .filter-field input[type='search'] {
   max-width: 20rem;
+}
+
+@media (max-width: 640px) {
+  .filter-field input[type='search'] {
+    max-width: 100%;
+    min-width: 0;
+  }
 }
 
 .filter-field input[type='number'] {
